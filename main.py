@@ -80,7 +80,7 @@ def retrieve(query: str, top_k: int = 3) -> List[str]:
     return results['documents'][0]
 
 
-query = "陈满仓为什么哭了？"
+query = "天使兽最终的结局是什么？"
 # 召回
 retrieved_chunks = retrieve(query, 10)
 
