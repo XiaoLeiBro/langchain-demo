@@ -8,3 +8,28 @@ wheels/
 
 # Virtual environments
 .venv
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Claude Code
+.claude/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Environment & secrets
+.env
+.env.local
+*.secret
+
+# Logs
+*.log
+logs/
+
+# UV (lock file is committed, but temp files ignored)
+.uv/
