@@ -6,6 +6,9 @@ readme = "README.md"
 requires-python = ">=3.14"
 dependencies = [
     "chromadb>=1.5.8",
+    "dashscope>=1.25.17",
+    "langchain>=1.2.15",
+    "langchain-community>=0.4.1",
     "openai>=2.32.0",
     "python-dotenv>=1.2.2",
     "scipy-stubs~=1.17.1",
