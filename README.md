@@ -1,16 +1,20 @@
 # RAG
 
-基于 Python 的检索增强生成（Retrieval-Augmented Generation）项目，实现文档分片、向量化索引、语义召回、交叉编码器重排与 LLM 生成的完整 RAG 流程。
+基于 Python 的检索增强生成（Retrieval-Augmented Generation）项目，包含 RAG 完整流程、余弦相似度原理演示以及 LangChain 聊天模型接入示例。
 
 ## 项目结构
 
 ```
 .
-├── rag-demo.py            # RAG 主流程：索引 → 召回 → 重排 → 生成
-├── cosine-similarity.py   # 余弦相似度原理演示（点积 / 模长）
-├── doc.md                 # 示例文档（用于索引和检索）
-├── pyproject.toml         # 项目依赖与配置
-└── .env                   # API 密钥与 Base URL（需自行创建）
+├── ragdemo/
+│   ├── rag-demo.py            # RAG 主流程：索引 → 召回 → 重排 → 生成
+│   └── doc.md                 # 示例文档（用于索引和检索）
+├── cosine-similarity/
+│   └── cosine-similarity.py   # 余弦相似度原理演示
+├── langchain/
+│   └── chat-openai-demo.py    # LangChain ChatOpenAI 聊天模型接入示例
+├── pyproject.toml             # 项目依赖与配置
+└── .env                       # API 密钥与 Base URL（需自行创建）
 ```
 
 ## 技术栈
@@ -20,7 +24,8 @@
 | 嵌入模型 | [BAAI/bge-base-en-v1.5](https://huggingface.co/BAAI/bge-base-en-v1.5)（768 维） |
 | 重排模型 | [BAAI/bge-reranker-base](https://huggingface.co/BAAI/bge-reranker-base) |
 | 向量数据库 | [ChromaDB](https://www.trychroma.com/)（内存模式） |
-| LLM | qwen3.6-plus（通过 OpenAI 兼容协议调用） |
+| LLM | qwen3.6-plus（阿里云百炼 OpenAI 兼容接口） |
+| LLM 框架 | [LangChain](https://www.langchain.com/)（ChatOpenAI） |
 | 包管理 | [uv](https://docs.astral.sh/uv/) |
 
 ## 快速开始
@@ -47,12 +52,14 @@ OPENAI_API_KEY=your-api-key
 BASE_URL=https://dashscope.aliyuncs.com/compatible-mode/v1
 ```
 
-> 本项目使用 OpenAI 兼容协议，支持 DashScope 等提供兼容接口的服务。
+> 本项目通过 OpenAI 兼容协议接入 LLM，支持阿里云百炼、DashScope 等服务。
 
 ### 运行
 
 ```bash
-uv run python rag-demo.py
+uv run ragdemo/rag-demo.py          # RAG 完整流程
+uv run cosine-similarity/cosine-similarity.py  # 余弦相似度演示
+uv run langchain/chat-openai-demo.py           # LangChain 聊天模型
 ```
 
 ## RAG 流程
@@ -84,8 +91,10 @@ flowchart LR
 similarity = dot(A, B) / (norm(A) × norm(B))
 ```
 
-可通过以下命令运行：
+## LangChain 聊天模型
 
-```bash
-uv run python cosine-similarity.py
-```
+`chat-openai-demo.py` 演示了 ChatOpenAI 的三种调用方式：
+
+- **简单调用** `model.invoke()` — 一次性问答
+- **流式输出** `model.stream()` — 打字机效果
+- **多轮对话** — 使用 `SystemMessage` / `HumanMessage` 构建消息列表
