@@ -9,7 +9,8 @@
 ├── demo/
 │   ├── llm-models.py                    # ChatOpenAI 聊天模型：简单调用 / 流式输出 / 多轮对话
 │   ├── embedding-models.py              # HuggingFace 嵌入模型 + 余弦相似度检索
-│   ├── universal-prompt.py              # 通用提示词模板
+│   ├── universal-prompt.py              # 通用提示词模板（zero-shot + LCEL 链式调用）
+│   ├── fewshot-prompt.py                # 样本提示词模板（few-shot）
 │   └── rag/
 │       ├── rag.py                       # RAG 完整流程：索引 → 召回 → 重排 → 生成
 │       ├── cosine-similarity/
@@ -61,6 +62,8 @@ BASE_URL=https://dashscope.aliyuncs.com/compatible-mode/v1
 ### 运行
 
 ```bash
+uv run demo/universal-prompt.py                           # 通用提示词模板（LCEL 链式调用）
+uv run demo/fewshot-prompt.py                            # 样本提示词模板（few-shot）
 uv run demo/llm-models.py                              # LangChain 聊天模型
 uv run demo/embedding-models.py                         # 嵌入模型 + 余弦相似度检索
 uv run demo/rag/rag.py                                  # RAG 完整流程
@@ -111,6 +114,24 @@ similarity = dot(A, B) / (norm(A) × norm(B))
 # 链式调用：prompt | model，一次调用完成格式化 + LLM 推理
 chain = prompt_template | model
 res = chain.invoke(input={"poet": "王维", "story": "唐诗"})
+```
+
+## 样本提示词模板（Few-Shot）
+
+`demo/fewshot-prompt.py` 演示了 FewShotPromptTemplate 的用法，通过提供示例让 LLM 理解任务模式：
+
+- **example_prompt** — 定义每个样本的格式模板
+- **examples** — 注入样本数据（list 内套 dict）
+- **prefix / suffix** — 拼接提示词的前缀和后缀，`input_variables` 声明动态变量
+
+```python
+few_shot_prompt_template = FewShotPromptTemplate(
+    example_prompt=example_prompt,
+    examples=[{"word": "大", "antonym": "小"}, ...],
+    prefix="告诉我单词的反义词，我提供如下的示例：",
+    suffix="基于前面的示例告诉我：{input_word}的反义词是？",
+    input_variables=["input_word"],
+)
 ```
 
 ## LangChain 聊天模型
